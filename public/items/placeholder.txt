@@ -1,0 +1,17 @@
+# Placeholder Images Needed
+
+Replace these placeholder files with actual images:
+
+## Catalog Items (/public/items/):
+- minifridge.jpg - Mini fridge image
+- desklamp.jpg - LED desk lamp image  
+- chair.jpg - Rolling desk chair image
+- rug.jpg - Area rug image
+- bin.jpg - Storage bin image
+- poster.jpg - Wall poster image
+
+## Dorm Thumbnails (/public/thumbs/):
+- jester.jpg - Jester West dorm thumbnail
+- sanjac.jpg - San Jacinto dorm thumbnail
+
+You can use any placeholder images from Unsplash or your own images. The names must match exactly as referenced in the code.
