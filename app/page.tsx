@@ -1,13 +1,35 @@
 'use client';
 import Link from 'next/link';
 import dorms from '@/lib/dorms';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+    const router = useRouter();
+
+    useEffect(() => {
+        try {
+            const seen = localStorage.getItem('dd_seen_onboarding');
+            if (!seen) {
+                router.replace('/onboarding');
+            }
+        } catch { }
+    }, [router]);
     return (
         <div style={{ display: 'flex', gap: 16, padding: 16, width: '100%' }}>
-            <div className="panel sidebar">
+            <div className="panel" style={{ flex: 1, display: 'grid', placeItems: 'center', padding: 24 }}>
+                <div className="col" style={{ alignItems: 'center', maxWidth: 640, textAlign: 'center' }}>
+                    <h1 style={{ margin: 0 }}>Welcome to DormDecor</h1>
+                    <p className="small">Design your room in minutes. Place real products at true scale, then buy what you love.</p>
+                    <div className="row" style={{ marginTop: 12 }}>
+                        <Link href="/onboarding"><button>Get Started</button></Link>
+                        <a href="#dorms"><button>Browse Dorms</button></a>
+                    </div>
+                </div>
+            </div>
+            <div id="dorms" className="panel sidebar">
                 <h3>Choose a UT Austin dorm</h3>
-                <p className="small">v0 includes two mocked layouts in scale.</p>
+                <p className="small">Pick a layout to start designing.</p>
                 <div className="hr" />
                 <div className="col">
                     {dorms.map(d => (
@@ -19,12 +41,6 @@ export default function Home() {
                             </div>
                         </Link>
                     ))}
-                </div>
-            </div>
-            <div className="panel" style={{ flex: 1, display: 'grid', placeItems: 'center' }}>
-                <div className="col" style={{ alignItems: 'center' }}>
-                    <h2>Plan your dorm. Buy with confidence.</h2>
-                    <p className="small">Drag real items into a to-scale room. Click an item's Buy button to open the product.</p>
                 </div>
             </div>
         </div>

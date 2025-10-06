@@ -1,9 +1,27 @@
 :root {
-    --bg: #0f1115;
-    --panel: #171923;
-    --text: #e6e6e6;
-    --muted: #9aa0aa;
-    --accent: #7aa2f7;
+    /* Brand palette */
+    --primary: #0ea5e9;
+    /* Sky Blue */
+    --secondary: #fde68a;
+    /* Soft Yellow */
+    --neutral: #64748b;
+    /* Cool Gray (text/balance) */
+    --accent-mint: #a7f3d0;
+    /* Mint Green */
+    --accent-coral: #fca5a5;
+    /* Coral Pink */
+
+    /* UI tokens */
+    --bg: #f8fafc;
+    /* base background */
+    --panel: #ffffff;
+    /* surface */
+    --text: var(--neutral);
+    /* primary text color */
+    --muted: #94a3b8;
+    /* subdued text */
+    --accent: var(--primary);
+    --border: #e2e8f0;
 }
 
 * {
@@ -28,12 +46,16 @@ a {
 }
 
 button {
-    background: #232736;
-    color: var(--text);
-    border: 1px solid #2b3041;
+    background: var(--primary);
+    color: #ffffff;
+    border: 1px solid var(--primary);
     border-radius: 8px;
-    padding: 6px 10px;
+    padding: 8px 12px;
     cursor: pointer
+}
+
+button:hover {
+    filter: brightness(0.95);
 }
 
 button:disabled {
@@ -43,7 +65,7 @@ button:disabled {
 
 .panel {
     background: var(--panel);
-    border: 1px solid #2b3041;
+    border: 1px solid var(--border);
     border-radius: 12px
 }
 
@@ -59,15 +81,15 @@ button:disabled {
 }
 
 .badge {
-    background: #2b3041;
+    background: var(--secondary);
     padding: 2px 6px;
     border-radius: 6px;
-    color: var(--muted)
+    color: #92400e
 }
 
 .input {
-    background: #0c0e14;
-    border: 1px solid #2b3041;
+    background: #ffffff;
+    border: 1px solid var(--border);
     color: var(--text);
     border-radius: 8px;
     padding: 6px 8px
@@ -89,7 +111,9 @@ button:disabled {
     left: 10px;
     bottom: 10px;
     padding: 4px 6px;
-    background: #0008;
+    background: #ffffffcc;
+    border: 1px solid var(--border);
+    color: var(--neutral);
     border-radius: 6px
 }
 
@@ -111,7 +135,7 @@ button:disabled {
     gap: 10px;
     align-items: center;
     padding: 8px;
-    border: 1px solid #2b3041;
+    border: 1px solid var(--border);
     border-radius: 10px
 }
 
@@ -120,7 +144,7 @@ button:disabled {
     height: 48px;
     object-fit: cover;
     border-radius: 8px;
-    border: 1px solid #2b3041
+    border: 1px solid var(--border)
 }
 
 .card .grow {
@@ -129,7 +153,7 @@ button:disabled {
 
 .hr {
     height: 1px;
-    background: #2b3041;
+    background: var(--border);
     margin: 8px 0
 }
 
@@ -137,8 +161,8 @@ button:disabled {
     position: fixed;
     right: 12px;
     bottom: 12px;
-    background: #1f2330;
-    border: 1px solid #2b3041;
+    background: #ffffff;
+    border: 1px solid var(--border);
     padding: 10px 12px;
     border-radius: 10px
 }

@@ -13,15 +13,37 @@ const GRID = 0.05; // 5cm snap
 const ROT_STEP = Math.PI / 12; // 15°
 
 export function CanvasRoom({ dorm }: { dorm: Dorm }) {
+    const [isDragging, setIsDragging] = useState(false);
+
+    useEffect(() => {
+        const handleStartDragging = () => setIsDragging(true);
+        const handleStopDragging = () => setIsDragging(false);
+
+        document.addEventListener('startDragging', handleStartDragging);
+        document.addEventListener('stopDragging', handleStopDragging);
+
+        return () => {
+            document.removeEventListener('startDragging', handleStartDragging);
+            document.removeEventListener('stopDragging', handleStopDragging);
+        };
+    }, []);
+
     return (
         <>
             <Canvas camera={{ position: [dorm.dimensions.w * 0.8, dorm.dimensions.h * 0.8, dorm.dimensions.d * 1.2], fov: 50 }}>
-                <color attach="background" args={[0x0f1115]} />
-                <ambientLight intensity={0.8} />
-                <directionalLight position={[3, 5, 2]} intensity={0.6} />
+                <color attach="background" args={[0xe0f2fe]} />
+                <ambientLight intensity={1.0} color={0xffffff} />
+                <directionalLight position={[3, 5, 2]} intensity={0.9} color={0xfff3cd} />
                 <RoomShell dorm={dorm} />
                 <Placements dorm={dorm} />
-                <OrbitControls enablePan={true} enableRotate={true} enableZoom={true} maxPolarAngle={Math.PI / 2.05} minDistance={2} maxDistance={12} />
+                <OrbitControls
+                    enablePan={!isDragging}
+                    enableRotate={!isDragging}
+                    enableZoom={!isDragging}
+                    maxPolarAngle={Math.PI / 2.05}
+                    minDistance={2}
+                    maxDistance={12}
+                />
                 <GlobalEventHandlers dorm={dorm} />
             </Canvas>
             <div className="gridLabel small">Snap: {GRID * 100}cm • Rotate: 15° • WASD/Arrows move, Q/E rotate, Del delete</div>
@@ -31,9 +53,11 @@ export function CanvasRoom({ dorm }: { dorm: Dorm }) {
 
 function RoomShell({ dorm }: { dorm: Dorm }) {
     const { w, d, h } = dorm.dimensions;
-    const wallMat = useMemo(() => new THREE.MeshStandardMaterial({ color: 0x2b3041, side: THREE.DoubleSide }), []);
-    const floorMat = useMemo(() => new THREE.MeshStandardMaterial({ color: 0x1a1e2a }), []);
-    const ceilMat = useMemo(() => new THREE.MeshStandardMaterial({ color: 0x202535 }), []);
+    // Theme-aligned materials
+    // Walls: sky tint, Floor: soft yellow, Ceiling: light surface
+    const wallMat = useMemo(() => new THREE.MeshStandardMaterial({ color: 0xe0f2fe, side: THREE.DoubleSide }), []); // sky-100
+    const floorMat = useMemo(() => new THREE.MeshStandardMaterial({ color: 0xfde68a }), []); // soft yellow
+    const ceilMat = useMemo(() => new THREE.MeshStandardMaterial({ color: 0xf8fafc }), []); // light
 
     return (
         <group>
@@ -59,7 +83,7 @@ function RoomShell({ dorm }: { dorm: Dorm }) {
                 <boxGeometry args={[0.05, h, d]} />
             </mesh>
             {/* Grid */}
-            <gridHelper args={[Math.max(w, d), Math.max(w, d) / GRID, 0x333a4d, 0x262c3b]} position={[0, 0.001, 0]} />
+            <gridHelper args={[Math.max(w, d), Math.max(w, d) / GRID, 0xa7f3d0, 0xfca5a5]} position={[0, 0.001, 0]} />
         </group>
     );
 }
@@ -89,6 +113,11 @@ function PlacedItem({ pid, itemId, dorm }: { pid: string; itemId: string; dorm: 
 
     const onPointerDown = (e: any) => {
         e.stopPropagation();
+        if (typeof e.preventDefault === 'function') {
+            e.preventDefault();
+        } else if (e?.nativeEvent && typeof e.nativeEvent.preventDefault === 'function') {
+            e.nativeEvent.preventDefault();
+        }
         select(pid);
         // Trigger global dragging state
         const event = new CustomEvent('startDragging', { detail: { pid } });
@@ -104,14 +133,14 @@ function PlacedItem({ pid, itemId, dorm }: { pid: string; itemId: string; dorm: 
                 onPointerDown={onPointerDown}
                 onClick={(e) => { e.stopPropagation(); }}>
                 {/* Base box approximating size */}
-                <meshStandardMaterial color={isSel ? 0x6b7280 : 0x4b5563} />
+                <meshStandardMaterial color={isSel ? 0x0ea5e9 : 0x64748b} />
                 <boxGeometry args={[item.size.w, Math.max(item.size.h, 0.02), item.size.d]} />
             </mesh>
             {/* Top billboard */}
             <mesh position={[0, Math.max(item.size.h / 2, 0.02) + 0.005, 0]}
                 rotation={[0, currentRotation, 0]}
                 onPointerDown={onPointerDown}>
-                <meshStandardMaterial map={tex} transparent={true} />
+                <meshStandardMaterial map={tex} transparent={true} color={0xffffff} />
                 <planeGeometry args={[Math.max(item.size.w, 0.2), Math.max(item.size.h, 0.2)]} />
             </mesh>
             {/* Selection outline */}
@@ -177,6 +206,9 @@ function GlobalEventHandlers({ dorm }: { dorm: Dorm }) {
 
         const handlePointerUp = () => {
             setDragging(false);
+            // Dispatch stop dragging event to disable OrbitControls
+            const event = new CustomEvent('stopDragging');
+            document.dispatchEvent(event);
         };
 
         const handleKeyDown = (event: KeyboardEvent) => {

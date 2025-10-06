@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Builds / caches
+dist/
+build/
+.next/
+out/
+
+# System & env
+.DS_Store
+.env
+*.log
+
+# Large assets (keep these out of Git; host elsewhere or use LFS)
+*.glb
+*.gltf
+*.obj
+*.stl
+*.blend
+*.fbx
+public/models/
